@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍷 Золотая Балка</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Главный контейнер -->
+    <div id="app" class="app">
+        <!-- Загрузка -->
+        <div id="loader" class="loader">
+            <div class="loader-spinner"></div>
+            <p>Загрузка...</p>
+        </div>
+
+        <!-- Главная страница -->
+        <div id="main-page" class="page hidden">
+            <header class="header">
+                <div class="header-content">
+                    <div class="logo">
+                        <h1>🍷 Золотая Балка</h1>
+                        <p class="subtitle">Крымская винодельня с 1889 года</p>
+                    </div>
+                    <div class="user-info">
+                        <span id="user-name">Добро пожаловать!</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <!-- Навигационное меню -->
+                <nav class="nav-menu">
+                    <button class="nav-btn active" data-page="wines">
+                        🍷 Каталог вин
+                    </button>
+                    <button class="nav-btn" data-page="ai-sommelier">
+                        🤖 ИИ-сомелье
+                    </button>
+                    <button class="nav-btn" data-page="diary">
+                        📖 Дневник
+                    </button>
+                    <button class="nav-btn" data-page="tour">
+                        🏰 Экскурсия
+                    </button>
+                </nav>
+
+                <!-- Контент страниц -->
+                <div class="content">
+                    <!-- Каталог вин -->
+                    <div id="wines-content" class="page-content active">
+                        <div class="filters">
+                            <div class="filter-row">
+                                <select id="type-filter" class="filter-select">
+                                    <option value="">Все типы</option>
+                                    <option value="игристое">🥂 Игристые</option>
+                                    <option value="белое">🤍 Белые</option>
+                                    <option value="красное">🍷 Красные</option>
+                                    <option value="розовое">🌹 Розовые</option>
+                                </select>
+                                
+                                <select id="price-filter" class="filter-select">
+                                    <option value="">Любая цена</option>
+                                    <option value="0-500">До 500₽</option>
+                                    <option value="500-1000">500-1000₽</option>
+                                    <option value="1000-2000">1000-2000₽</option>
+                                    <option value="2000-5000">2000-5000₽</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-row">
+                                <input type="text" id="search-input" class="search-input" 
+                                       placeholder="🔍 Поиск по названию...">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="awards-filter">
+                                    <span class="checkmark"></span>
+                                    🏆 Только награждённые
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="wines-grid" class="wines-grid">
+                            <!-- Карточки вин будут добавлены динамически -->
+                        </div>
+                    </div>
+
+                    <!-- ИИ-сомелье -->
+                    <div id="ai-sommelier-content" class="page-content">
+                        <div class="ai-header">
+                            <h2>🤖 ИИ-сомелье</h2>
+                            <p>Персональные винные рекомендации на базе YandexGPT</p>
+                        </div>
+
+                        <div class="ai-quick-buttons">
+                            <button class="ai-quick-btn" data-query="Посоветуй вино к мясу">
+                                🥩 К мясу
+                            </button>
+                            <button class="ai-quick-btn" data-query="Что подойдет к рыбе?">
+                                🐟 К рыбе
+                            </button>
+                            <button class="ai-quick-btn" data-query="Вино для праздника">
+                                🎉 Для праздника
+                            </button>
+                            <button class="ai-quick-btn" data-query="Романтический ужин">
+                                💑 Романтично
+                            </button>
+                        </div>
+
+                        <div class="ai-chat">
+                            <div id="ai-messages" class="ai-messages">
+                                <div class="ai-message bot">
+                                    <div class="message-content">
+                                        <p>👋 Привет! Я ваш персональный сомелье. Расскажите о ваших предпочтениях или выберите быстрый вопрос выше.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ai-input-container">
+                                <input type="text" id="ai-input" class="ai-input" 
+                                       placeholder="Задайте вопрос о вине..." maxlength="500">
+                                <button id="ai-send" class="ai-send-btn">📤</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Дегустационный дневник -->
+                    <div id="diary-content" class="page-content">
+                        <div class="diary-header">
+                            <h2>📖 Дегустационный дневник</h2>
+                            <div class="diary-stats" id="diary-stats">
+                                <!-- Статистика будет добавлена динамически -->
+                            </div>
+                        </div>
+
+                        <div class="diary-tabs">
+                            <button class="diary-tab active" data-tab="notes">Мои заметки</button>
+                            <button class="diary-tab" data-tab="stats">Статистика</button>
+                        </div>
+
+                        <div id="diary-notes" class="diary-tab-content active">
+                            <div id="notes-list" class="notes-list">
+                                <!-- Заметки будут добавлены динамически -->
+                            </div>
+                        </div>
+
+                        <div id="diary-stats-content" class="diary-tab-content">
+                            <div class="stats-grid">
+                                <!-- Статистика будет добавлена динамически -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Виртуальная экскурсия -->
+                    <div id="tour-content" class="page-content">
+                        <div class="tour-header">
+                            <h2>🏰 Виртуальная экскурсия</h2>
+                            <p>Путешествие по винодельне с 1889 года</p>
+                        </div>
+
+                        <div id="tour-sections" class="tour-sections">
+                            <!-- Разделы экскурсии будут добавлены динамически -->
+                        </div>
+
+                        <div class="tour-booking">
+                            <h3>📅 Записаться на экскурсию</h3>
+                            <div class="booking-options">
+                                <!-- Варианты экскурсий будут добавлены динамически -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Модальное окно для вина -->
+        <div id="wine-modal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close">&times;</span>
+                <div id="wine-details">
+                    <!-- Детали вина будут добавлены динамически -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно для добавления заметки -->
+        <div id="note-modal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close">&times;</span>
+                <h3>📝 Дегустационная заметка</h3>
+                <form id="note-form" class="note-form">
+                    <div class="rating-input">
+                        <label>Оценка:</label>
+                        <div class="rating-stars" id="rating-stars">
+                            <span class="star" data-rating="1">⭐</span>
+                            <span class="star" data-rating="2">⭐</span>
+                            <span class="star" data-rating="3">⭐</span>
+                            <span class="star" data-rating="4">⭐</span>
+                            <span class="star" data-rating="5">⭐</span>
+                            <span class="star" data-rating="6">🌟</span>
+                            <span class="star" data-rating="7">🌟</span>
+                            <span class="star" data-rating="8">🌟</span>
+                            <span class="star" data-rating="9">🌟</span>
+                            <span class="star" data-rating="10">🌟</span>
+                        </div>
+                        <span id="rating-text">Выберите оценку</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="note-text">Общее впечатление:</label>
+                        <textarea id="note-text" rows="3" 
+                                  placeholder="Опишите ваши впечатления от вина..."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="aroma-notes">Аромат:</label>
+                        <input type="text" id="aroma-notes" 
+                               placeholder="Цветочный, фруктовый, пряный...">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="taste-notes">Вкус:</label>
+                        <input type="text" id="taste-notes" 
+                               placeholder="Сухое, полусладкое, танинное...">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="finish-notes">Послевкусие:</label>
+                        <input type="text" id="finish-notes" 
+                               placeholder="Долгое, мягкое, с нотами...">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeNoteModal()">
+                            Отмена
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            💾 Сохранить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Тост уведомления -->
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <!-- Подключаем JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
